@@ -1,0 +1,21 @@
+#version: '3'   # 컴포즈 파일 버전. 2024.06 기준 명시하면 오류남. 이제 명시할 필요 없어짐
+
+services:    # 컨테이너 정의
+  mysql:
+    platform: linux/x86_64
+    image: mysql:8.0
+    container_name: stock-mysql
+    environment:   # 환경 변수 설정
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: voucher_mgmt
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      TZ: 'Asia/Seoul'
+    command: --lower_case_table_names=1
+    ports:
+      - "3307:3306"  # 호스트의 3307 포트를 컨테이너의 3306 포트로 매핑 (컨테이너 외부:컨테이너 내부) <- 컨테이너 내부는 무조건 3306
+    volumes:
+      # - ./data/:/var/lib/mysql #디렉토리 마운트 설정
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql #init.sql 실행을 위한 설정. docker-compose
